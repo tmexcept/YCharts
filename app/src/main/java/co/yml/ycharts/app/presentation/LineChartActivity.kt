@@ -25,7 +25,6 @@ import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.DataUtils
-import co.yml.charts.ui.linechart.LineChart
 import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
@@ -211,7 +210,7 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        gridLines = GridLines()
+        gridLines = GridLines(),
     )
     LineChart(
         modifier = Modifier

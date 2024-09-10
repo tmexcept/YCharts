@@ -26,7 +26,7 @@ internal fun Project.configureKotlinAndroid(
         }
 
         defaultConfig {
-            minSdk = 26
+            minSdk = 25
             testHandleProfiling = true
             testFunctionalTest = true
             vectorDrawables {

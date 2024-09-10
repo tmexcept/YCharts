@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
@@ -35,7 +34,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.axis.getXAxisScale
@@ -48,11 +46,7 @@ import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.drawGridLines
 import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
-import co.yml.charts.ui.bubblechart.model.Bubble
 import co.yml.charts.ui.bubblechart.model.BubbleChartData
-import co.yml.charts.ui.bubblechart.model.BubbleStyle
-import co.yml.charts.ui.linechart.drawHighLightOnSelectedPoint
-import co.yml.charts.ui.linechart.drawHighlightText
 import co.yml.charts.ui.linechart.getMappingPointsToGraph
 import co.yml.charts.ui.linechart.getMaxElementInYAxis
 import co.yml.charts.ui.linechart.getYAxisScale

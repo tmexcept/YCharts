@@ -105,7 +105,6 @@ fun BarWithLineChart() {
     val yStepSize = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .bottomPadding(5.dp)
         .labelData { index -> index.toString() }
         .build()
     val yAxisData = AxisData.Builder()

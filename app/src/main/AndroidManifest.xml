@@ -23,6 +23,11 @@
             android:label="@string/title_activity_line_chart"
             android:theme="@style/Theme.YCharts" />
         <activity
+            android:name="co.yml.ycharts.app.presentation.LineChartActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_line_chart"
+            android:theme="@style/Theme.YCharts" />
+        <activity
             android:name="co.yml.ycharts.app.presentation.WaveChartActivity"
             android:exported="false"
             android:label="@string/title_activity_wave_chart"

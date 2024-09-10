@@ -111,7 +111,7 @@ private fun SimpleDonutChart(context: Context) {
     val pieChartConfig =
         PieChartConfig(
             labelVisible = true,
-            strokeWidth = 120f,
+            strokeWidth = 20f,
             labelColor = Color.Black,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
@@ -128,7 +128,7 @@ private fun SimpleDonutChart(context: Context) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
         DonutPieChart(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(400.dp)
                 .height(400.dp),
             data,
             pieChartConfig

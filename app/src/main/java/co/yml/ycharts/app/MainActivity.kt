@@ -53,6 +53,14 @@ class MainActivity : ComponentActivity() {
                     )
                     addActivityInOutAnim()
                 })
+                ChartButton(title = getString(R.string.title_line_chart), onClick = {
+                    startActivity(
+                        Intent(
+                            this@MainActivity, LineChartActivity2::class.java
+                        )
+                    )
+                    addActivityInOutAnim()
+                })
 
                 ChartButton(title = getString(R.string.title_wave_chart), onClick = {
                     startActivity(

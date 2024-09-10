@@ -185,7 +185,7 @@ fun DonutPieChart(
                             arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
-                        isDonut = pieChartData.plotType == PlotType.Donut,
+                        isDonut = true,
                         strokeWidth = pieChartConfig.strokeWidth,
                         isActive = activePie == index,
                         pieChartConfig = pieChartConfig
