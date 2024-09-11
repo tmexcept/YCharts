@@ -11,6 +11,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
@@ -68,27 +71,50 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Pie Chart")
                         }
 
-                        val context = LocalContext.current
-                        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_combine_empty)
-                        val layoutSize = LayoutSize()
-                        val density = LocalDensity.current
-                        val iconSize = with(density) { layoutSize.iconSize.toPx().toInt() }
-                        val combineBitmap = drawable!!.toBitmap(iconSize, iconSize).asImageBitmap()
 
                         TableZoneCanvasContainer(
                             modifier = Modifier
                                 .width(1440.dp)
                                 .height(1080.dp),
-                            layoutSize = layoutSize,
-                            combineBitmap = combineBitmap,
                             widgets = listOf(
                                 TableWidget(
                                     offset = Offset(100f, 100f),
                                     angle = 0f,
                                     radius = 60f,
+                                    sizeType = SizeType.SMALL_CIRCLE,
+                                ),
+                                TableWidget(
+                                    offset = Offset(300f, 100f),
+                                    angle = 0f,
+                                    radius = 100f,
+                                    sizeType = SizeType.MEDIUM_CIRCLE,
+                                ),
+                                TableWidget(
+                                    offset = Offset(500f, 100f),
+                                    angle = 0f,
+                                    radius = 140f,
+                                    sizeType = SizeType.LARGE_CIRCLE,
+                                ),
+                                TableWidget(
+                                    offset = Offset(700f, 100f),
+                                    angle = 0f,
                                     width = 60f,
                                     height = 60f,
-                                    sizeType = SizeType.SMALL_CIRCLE,
+                                    sizeType = SizeType.SMALL_RECT,
+                                ),
+                                TableWidget(
+                                    offset = Offset(900f, 100f),
+                                    angle = 0f,
+                                    width = 100f,
+                                    height = 100f,
+                                    sizeType = SizeType.MEDIUM_RECT,
+                                ),
+                                TableWidget(
+                                    offset = Offset(1100f, 100f),
+                                    angle = 0f,
+                                    width = 140f,
+                                    height = 140f,
+                                    sizeType = SizeType.LARGE_RECT,
                                 ),
                             )
                         )

@@ -20,9 +20,9 @@ data class TableLayoutInfo(
 data class TableWidget(
     val offset: Offset,
     val angle: Float,
-    val radius: Float,
-    val width: Float,
-    val height: Float,
+    val radius: Float = 0f,
+    val width: Float = 0f,
+    val height: Float = 0f,
     val sizeType: SizeType,
 )
 
@@ -42,6 +42,16 @@ data class LayoutSize(
     val bigTableNameTextSize: TextUnit = 30.sp,
     val guestNumberTextSize: TextUnit = 18.sp,
     val bookingTimeTextSize: TextUnit = 18.sp,
+    val iconSizePx: Float = 16f,
+    val combineTextSizePx: Float = 16f,
+    val smallTableNameTextSizePx: Float = 20f,
+    val largeTableNameTextSizePx: Float = 30f,
+    val guestNumberTextSizePx: Float = 18f,
+    val bookingTimeTextSizePx: Float = 18f,
+
+    val smallCombineTextPaddingPx: Float = 2f,
+    val largeCombineTextPaddingPx: Float = 4.5f,
+    val combineBackgroundCorner: Float = 8f,
 )
 
 enum class SizeType{
