@@ -1,10 +1,18 @@
 package com.example.table
 
+import android.graphics.drawable.Drawable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+data class Drawables(
+    val combine: Drawable? = null,
+    val chair: Drawable? = null,
+    val guest: Drawable? = null,
+    val book: Drawable? = null,
+)
 
 data class TableLayoutInfo(
     val xOffset: Float,
@@ -42,16 +50,22 @@ data class LayoutSize(
     val bigTableNameTextSize: TextUnit = 30.sp,
     val guestNumberTextSize: TextUnit = 18.sp,
     val bookingTimeTextSize: TextUnit = 18.sp,
+
     val iconSizePx: Float = 16f,
-    val combineTextSizePx: Float = 16f,
+    val iconDiv: Float = 2f,
     val smallTableNameTextSizePx: Float = 20f,
     val largeTableNameTextSizePx: Float = 30f,
-    val guestNumberTextSizePx: Float = 18f,
-    val bookingTimeTextSizePx: Float = 18f,
 
-    val smallCombineTextPaddingPx: Float = 2f,
-    val largeCombineTextPaddingPx: Float = 4.5f,
+    val bookingTimeTextSizePx: Float = 18f,
+    val bookingTimeZoneHeight: Float = 32f,
+
+    val combineTextSizePx: Float = 16f,
+    val smallCombinePaddingPx: Float = 2f,
+    val largeCombinePaddingPx: Float = 4.5f,
     val combineBackgroundCorner: Float = 8f,
+
+    val guestTextSizePx: Float = 18f,
+    val guestZoneHeightPx: Float = 32f,
 )
 
 enum class SizeType{

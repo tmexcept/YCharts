@@ -6,7 +6,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -28,7 +27,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -46,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.piechartcontainer.R
-import com.example.piechartcontainer.ui.theme.Purple500
 import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF1D2129
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
@@ -68,17 +65,39 @@ fun TableZoneCanvasContainer(
                     iconSizePx = 16.dp.toPx(),
                     smallTableNameTextSizePx = 20.sp.toPx(),
                     largeTableNameTextSizePx = 30.sp.toPx(),
-                    smallCombineTextPaddingPx = 2.dp.toPx(),
-                    largeCombineTextPaddingPx = 4.5.dp.toPx(),
+
+                    combineTextSizePx = 16.sp.toPx(),
+                    smallCombinePaddingPx = 2.dp.toPx(),
+                    largeCombinePaddingPx = 4.5.dp.toPx(),
                     combineBackgroundCorner = 8.dp.toPx(),
+                    iconDiv = 2.dp.toPx(),
+
+                    guestTextSizePx = 16.sp.toPx(),
+                    guestZoneHeightPx = 32.dp.toPx(),
+
+                    bookingTimeTextSizePx = 16.sp.toPx(),
+                    bookingTimeZoneHeight = 32.dp.toPx(),
                 )
             )
         }
     }
-    val drawable = ContextCompat.getDrawable(context, R.drawable.ic_combine_empty)
+    val drawables by remember {
+        mutableStateOf(
+            Drawables(
+                combine = ContextCompat.getDrawable(context, R.drawable.ic_combine_empty),
+                chair = ContextCompat.getDrawable(context, R.drawable.icon_chair),
+                guest = ContextCompat.getDrawable(context, R.drawable.icon_customer),
+                book = ContextCompat.getDrawable(context, R.drawable.ic_hourglass),
+            )
+        )
+    }
+
     val combineBitmap by remember {
         mutableStateOf(
-            drawable!!.toBitmap(layoutSize.iconSizePx.toInt(), layoutSize.iconSizePx.toInt())
+            drawables.combine!!.toBitmap(
+                layoutSize.iconSizePx.toInt(),
+                layoutSize.iconSizePx.toInt()
+            )
         )
     }
 
@@ -109,45 +128,16 @@ fun TableZoneCanvasContainer(
                 widgets.forEach {
                     when (it.sizeType) {
                         SizeType.SMALL_CIRCLE -> {
-                            pathClip.apply {
-                                val offsetX = it.offset.x
-                                val offsetY = it.offset.y
-                                addOval(
-                                    androidx.compose.ui.geometry.Rect(
-                                        offsetX, offsetY,
-                                        offsetX + it.radius * 2, offsetY + it.radius * 2
-                                    )
-                                )
-                            }
-                            clipPath(path = pathClip) {
-                                paint.setColor(color_0xFF14CABF.toArgb())
-                                drawSmallCircleTable(
-                                    this,
-                                    circleTable = it,
-                                    paint = paint,
-                                    drawCombine = {
-                                        drawSmallCombineInfo(
-                                            drawScope = this,
-                                            circleTable = it,
-                                            layoutSize = layoutSize,
-                                            drawable = drawable,
-                                            paint = paint,
-                                            padding = layoutSize.smallCombineTextPaddingPx
-                                        )
-                                    },
-                                    drawTableName = {
-                                        paint.textSize = layoutSize.smallTableNameTextSizePx
-                                        paint.setColor(color_0xFFFFFFFF.toArgb())
-                                        drawTableName(
-                                            drawScope = this,
-                                            text = "A02",
-                                            circleTable = it,
-                                            paint = paint,
-                                            layoutSize = layoutSize,
-                                        )
-                                    }
-                                )
-                            }
+                            drawSmallCircleTable(
+                                this,
+                                pathClip = pathClip,
+                                widget = it,
+                                paint = paint,
+                                layoutSize = layoutSize,
+                                drawables = drawables,
+                                sizeType = it.sizeType,
+                                tableName = "A02",
+                            )
 
                             drawSmallCircleTable2(
                                 "A02", textMeasurer, this,
@@ -160,11 +150,35 @@ fun TableZoneCanvasContainer(
                         }
 
                         SizeType.MEDIUM_CIRCLE -> {
-
+                            drawSmallCircleTable(
+                                this,
+                                pathClip = pathClip,
+                                widget = it,
+                                paint = paint,
+                                layoutSize = layoutSize,
+                                drawables = drawables,
+                                sizeType = it.sizeType,
+                                tableName = "A02",
+                                combineBgColor = color_0xFFFFFFFF.toArgb(),
+                                combineText = "2",
+                            )
                         }
 
-                        SizeType.LARGE_RECT -> {
-
+                        SizeType.LARGE_CIRCLE -> {
+                            drawSmallCircleTable(
+                                this,
+                                pathClip = pathClip,
+                                widget = it,
+                                paint = paint,
+                                layoutSize = layoutSize,
+                                drawables = drawables,
+                                sizeType = it.sizeType,
+                                tableName = "A02",
+                                combineBgColor = color_0xFFFFFFFF.toArgb(),
+                                combineText = "20",
+                                bookTime = "1h25m",
+                                guestZoneText = "40",
+                            )
                         }
 
                         else -> {}
@@ -176,128 +190,46 @@ fun TableZoneCanvasContainer(
 }
 
 fun drawTableName(
-    drawScope: DrawScope,
-    circleTable: TableWidget,
-    text: String,
+    canvas: Canvas,
+    widget: TableWidget,
+    layoutSize: LayoutSize,
+    tableName: String,
+    tableNameTextSize: Float,
+    tableNameTextColor: Int,
     paint: Paint,
-    layoutSize: LayoutSize,
+    drawBookingTime: ((Float) -> Unit)? = null,
 ) {
-    with(drawScope) {
-        drawContext.canvas.nativeCanvas.apply {
-            val textStartY = circleTable.offset.y + circleTable.radius + paint.textSize / 2
-            drawText(   //绘制tableName
-                text,
-                circleTable.offset.x + circleTable.radius,
-                textStartY,
-                paint
-            )
-        }
-    }
-}
 
-fun drawMediumCircleTable(
-    drawScope: DrawScope,
-    circleTable: TableWidget,
-    tableColor: Color,
-    layoutSize: LayoutSize,
-    combineBitmap: ImageBitmap,
-    drawTableName: () -> Unit,
-) {
-    val drawOffset = circleTable.offset
-    val radius = circleTable.radius
-    with(drawScope) {
-        drawCircle(
-            color = tableColor,
-            center = drawOffset,
-            radius = radius,
+    paint.textSize = tableNameTextSize
+    paint.setColor(tableNameTextColor)
+    paint.typeface = Typeface.DEFAULT_BOLD
+
+    if (drawBookingTime == null) {
+        val textStartY = widget.offset.y + widget.radius + paint.textSize / 2 - paint.textSize / 6
+        canvas.drawText(   //绘制tableName
+            tableName,
+            widget.offset.x + widget.radius,
+            textStartY,
+            paint
+        )
+    } else {
+        val height = widget.radius * 2
+        //计算上下四个控件的间距
+        val div = (height - layoutSize.iconSizePx - layoutSize.largeCombinePaddingPx * 2
+            - layoutSize.bookingTimeZoneHeight - layoutSize.largeTableNameTextSizePx - layoutSize.guestZoneHeightPx) / 3
+
+        val startY =
+            widget.offset.y + height - layoutSize.guestZoneHeightPx - div - paint.textSize / 6
+        canvas.drawText(   //绘制tableName
+            tableName,
+            widget.offset.x + widget.radius,
+            startY,
+            paint
         )
 
-        drawRoundRect(
-            color_0xFFFFFFFF,
-        )
-
-        drawImage(
-            image = combineBitmap,
-            dstSize = IntSize(
-                layoutSize.iconSizePx.toInt(),
-                layoutSize.iconSizePx.toInt()
-            ),
-            dstOffset = IntOffset(
-                (drawOffset.x - layoutSize.iconSizePx / 2).toInt(),
-                (drawOffset.y - radius).toInt()
-            ),
-            colorFilter = ColorFilter.tint(color = Color(0xFF3E6BF6)),
-        )
-
-        drawTableName()
+        drawBookingTime.invoke(div)
     }
 }
-
-fun drawSmallCircleTable(
-    drawScope: DrawScope,
-    circleTable: TableWidget,
-    paint: Paint,
-    drawCombine: () -> Unit,
-    drawTableName: () -> Unit,
-) {
-    with(drawScope) {
-        drawContext.canvas.nativeCanvas.apply {
-            drawCircle(
-                circleTable.offset.x + circleTable.radius,
-                circleTable.offset.y + circleTable.radius,
-                circleTable.radius,
-                paint
-            )
-        }
-
-        drawCombine()
-
-        drawTableName()
-    }
-}
-
-fun drawSmallCombineInfo(
-    drawScope: DrawScope,
-    circleTable: TableWidget,
-    layoutSize: LayoutSize,
-    drawable: Drawable? = null,
-    paint: Paint,
-    padding: Float,
-    backgroundColor: Int = 0,
-    text: String? = null,
-    isCircleType: Boolean = true,
-) {
-    with(drawScope) {
-        drawContext.canvas.nativeCanvas.apply {
-            val left = circleTable.offset.x + circleTable.radius - layoutSize.iconSizePx / 2
-            val top = circleTable.offset.y + padding
-
-            if (backgroundColor != 0) {
-                if (isCircleType) {
-                    this.drawRoundRect(
-                        left - padding,
-                        top - padding,
-                        left + layoutSize.iconSizePx + padding,
-                        top + layoutSize.iconSizePx + padding,
-                        layoutSize.combineBackgroundCorner,
-                        layoutSize.combineBackgroundCorner,
-                        paint
-                    )
-                }
-            }
-
-            drawable?.setTint(Purple500.toArgb())
-            drawable?.setBounds(
-                left.toInt(),
-                top.toInt(),
-                (left + layoutSize.iconSizePx).toInt(),
-                (top + layoutSize.iconSizePx).toInt()
-            )
-            drawable?.draw(this)
-        }
-    }
-}
-
 
 @OptIn(ExperimentalTextApi::class)
 fun drawSmallCircleTable2(
