@@ -75,6 +75,7 @@ enum class SizeType{
     SMALL_RECT,
     MEDIUM_RECT,
     LARGE_RECT,
+    LARGE_RECT_,
     WALL,
     BAR,
     CHAIR,

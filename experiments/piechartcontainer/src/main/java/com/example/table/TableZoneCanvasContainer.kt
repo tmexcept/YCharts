@@ -128,7 +128,7 @@ fun TableZoneCanvasContainer(
                 widgets.forEach {
                     when (it.sizeType) {
                         SizeType.SMALL_CIRCLE -> {
-                            drawSmallCircleTable(
+                            drawCircleTable(
                                 this,
                                 pathClip = pathClip,
                                 widget = it,
@@ -150,7 +150,7 @@ fun TableZoneCanvasContainer(
                         }
 
                         SizeType.MEDIUM_CIRCLE -> {
-                            drawSmallCircleTable(
+                            drawCircleTable(
                                 this,
                                 pathClip = pathClip,
                                 widget = it,
@@ -165,7 +165,7 @@ fun TableZoneCanvasContainer(
                         }
 
                         SizeType.LARGE_CIRCLE -> {
-                            drawSmallCircleTable(
+                            drawCircleTable(
                                 this,
                                 pathClip = pathClip,
                                 widget = it,
@@ -193,18 +193,20 @@ fun drawTableName(
     canvas: Canvas,
     widget: TableWidget,
     layoutSize: LayoutSize,
+    drawables: Drawables,
     tableName: String,
     tableNameTextSize: Float,
     tableNameTextColor: Int,
     paint: Paint,
-    drawBookingTime: ((Float) -> Unit)? = null,
+    bookTime: String? = null,
+    bookTimeContentColor: Int = 0,
 ) {
 
     paint.textSize = tableNameTextSize
     paint.setColor(tableNameTextColor)
     paint.typeface = Typeface.DEFAULT_BOLD
 
-    if (drawBookingTime == null) {
+    if (bookTime == null) {
         val textStartY = widget.offset.y + widget.radius + paint.textSize / 2 - paint.textSize / 6
         canvas.drawText(   //绘制tableName
             tableName,
@@ -227,7 +229,29 @@ fun drawTableName(
             paint
         )
 
-        drawBookingTime.invoke(div)
+        var contentWidth = layoutSize.iconSizePx
+        paint.typeface = Typeface.DEFAULT
+        paint.textSize = layoutSize.bookingTimeTextSizePx
+        val textWidth = paint.measureText(bookTime)
+        contentWidth += layoutSize.iconDiv + textWidth
+
+        val left = widget.offset.x + widget.radius - contentWidth / 2
+        //需去除底部Guest区域高度，div，bookingTimeZone高度一半
+        val top =
+            widget.offset.y + widget.radius * 2 - layoutSize.guestZoneHeightPx - layoutSize.largeTableNameTextSizePx - div * 2 - layoutSize.bookingTimeZoneHeight / 2 - layoutSize.iconSizePx / 2
+
+        drawIconWithText(
+            canvas = canvas,
+            layoutSize = layoutSize,
+            drawable = drawables.book,
+            paint = paint,
+            contentColor = bookTimeContentColor,
+            text = bookTime,
+            textWidth = textWidth,
+            left = left,
+            top = top,
+            div = layoutSize.iconDiv,
+        )
     }
 }
 

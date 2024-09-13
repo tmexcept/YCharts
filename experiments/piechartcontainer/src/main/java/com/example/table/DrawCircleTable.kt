@@ -15,7 +15,7 @@ import com.example.piechartcontainer.ui.theme.color_0xFF4E8AFF
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
 
 
-fun drawSmallCircleTable(
+fun drawCircleTable(
     drawScope: DrawScope,
     widget: TableWidget,
     pathClip: Path,
@@ -89,6 +89,7 @@ fun drawSmallCircleTable(
                     canvas = this,
                     widget = widget,
                     layoutSize = layoutSize,
+                    drawables = drawables,
                     tableName = tableName,
                     tableNameTextSize = if (sizeType == SizeType.SMALL_CIRCLE) {
                         layoutSize.smallTableNameTextSizePx
@@ -97,33 +98,8 @@ fun drawSmallCircleTable(
                     },
                     tableNameTextColor = tableNameTextColor,
                     paint = paint,
-                    drawBookingTime = if (sizeType != SizeType.LARGE_CIRCLE || bookTime == null) null else {
-                        { div ->
-                            var contentWidth = layoutSize.iconSizePx
-                            paint.typeface = Typeface.DEFAULT
-                            paint.textSize = layoutSize.bookingTimeTextSizePx
-                            val textWidth = paint.measureText(bookTime)
-                            contentWidth += layoutSize.iconDiv + textWidth
-
-                            val left = widget.offset.x + widget.radius - contentWidth / 2
-                            //需去除底部Guest区域高度，div，bookingTimeZone高度一半
-                            val top =
-                                widget.offset.y + widget.radius * 2 - layoutSize.guestZoneHeightPx - layoutSize.largeTableNameTextSizePx- div * 2 - layoutSize.bookingTimeZoneHeight / 2 - layoutSize.iconSizePx / 2
-
-                            drawIconWithText(
-                                canvas = this,
-                                layoutSize = layoutSize,
-                                drawable = drawables.book,
-                                paint = paint,
-                                contentColor = bookTimeContentColor,
-                                text = bookTime,
-                                textWidth = textWidth,
-                                left = left,
-                                top = top,
-                                div = layoutSize.iconDiv,
-                            )
-                        }
-                    }
+                    bookTime = if (sizeType != SizeType.LARGE_CIRCLE) null else bookTime,
+                    bookTimeContentColor = bookTimeContentColor,
                 )
             }
         }
