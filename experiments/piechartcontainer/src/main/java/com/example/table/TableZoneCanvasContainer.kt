@@ -1,7 +1,6 @@
 package com.example.table
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
@@ -46,6 +45,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.example.piechartcontainer.R
 import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF1D2129
+import com.example.piechartcontainer.ui.theme.color_0xFF9195A3
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
 
 
@@ -63,20 +63,25 @@ fun TableZoneCanvasContainer(
             mutableStateOf(
                 LayoutSize(
                     iconSizePx = 16.dp.toPx(),
-                    smallTableNameTextSizePx = 20.sp.toPx(),
-                    largeTableNameTextSizePx = 30.sp.toPx(),
+                    tableNameSmallTextSizePx = 20.sp.toPx(),
+                    tableNameLargeTextSizePx = 30.sp.toPx(),
+                    tableNameLargeHeightPx = 48.dp.toPx(),
 
                     combineTextSizePx = 16.sp.toPx(),
-                    smallCombinePaddingPx = 2.dp.toPx(),
-                    largeCombinePaddingPx = 4.5.dp.toPx(),
-                    combineBackgroundCorner = 8.dp.toPx(),
+                    combineSmallPaddingPx = 2.dp.toPx(),
+                    combineLargePaddingPx = 4.5.dp.toPx(),
+                    combineBgCornerPx = 8.dp.toPx(),
                     iconDiv = 2.dp.toPx(),
 
                     guestTextSizePx = 16.sp.toPx(),
-                    guestZoneHeightPx = 32.dp.toPx(),
+                    bottomBgHeightPx = 32.dp.toPx(),
+                    guestZoneHeightPxLittleRect = 16.dp.toPx(),
 
                     bookingTimeTextSizePx = 16.sp.toPx(),
                     bookingTimeZoneHeight = 32.dp.toPx(),
+
+                    rectRadius = 12.dp.toPx(),
+                    rectBottomPaddingLtr = 12.dp.toPx(),
                 )
             )
         }
@@ -105,7 +110,7 @@ fun TableZoneCanvasContainer(
         mutableStateOf(
             Paint().apply {
                 color = color_0xFF1D2129.toArgb()
-                textSize = layoutSize.smallTableNameTextSizePx
+                textSize = layoutSize.tableNameSmallTextSizePx
                 textAlign = Paint.Align.CENTER
                 typeface = Typeface.DEFAULT_BOLD
                 isAntiAlias = true  //开启抗锯齿
@@ -127,43 +132,8 @@ fun TableZoneCanvasContainer(
             onDraw = {
                 widgets.forEach {
                     when (it.sizeType) {
-                        SizeType.SMALL_CIRCLE -> {
-                            drawCircleTable(
-                                this,
-                                pathClip = pathClip,
-                                widget = it,
-                                paint = paint,
-                                layoutSize = layoutSize,
-                                drawables = drawables,
-                                sizeType = it.sizeType,
-                                tableName = "A02",
-                            )
-
-                            drawSmallCircleTable2(
-                                "A02", textMeasurer, this,
-                                yOffset = 400,
-                                circleTable = it,
-                                tableColor = color_0xFF14CABF,
-                                layoutSize = layoutSize,
-                                combineBitmap = combineBitmap.asImageBitmap(),
-                            )
-                        }
-
-                        SizeType.MEDIUM_CIRCLE -> {
-                            drawCircleTable(
-                                this,
-                                pathClip = pathClip,
-                                widget = it,
-                                paint = paint,
-                                layoutSize = layoutSize,
-                                drawables = drawables,
-                                sizeType = it.sizeType,
-                                tableName = "A02",
-                                combineBgColor = color_0xFFFFFFFF.toArgb(),
-                                combineText = "2",
-                            )
-                        }
-
+                        SizeType.MEDIUM_CIRCLE,
+                        SizeType.SMALL_CIRCLE,
                         SizeType.LARGE_CIRCLE -> {
                             drawCircleTable(
                                 this,
@@ -174,83 +144,54 @@ fun TableZoneCanvasContainer(
                                 drawables = drawables,
                                 sizeType = it.sizeType,
                                 tableName = "A02",
+                                tableBgColor = color_0xFF14CABF.toArgb(),
                                 combineBgColor = color_0xFFFFFFFF.toArgb(),
                                 combineText = "20",
                                 bookTime = "1h25m",
                                 guestZoneText = "40",
                             )
+
+                            if(it.sizeType == SizeType.SMALL_CIRCLE) {
+                                drawSmallCircleTable2(
+                                    "A02", textMeasurer, this,
+                                    yOffset = 400,
+                                    circleTable = it,
+                                    tableColor = color_0xFF14CABF,
+                                    layoutSize = layoutSize,
+                                    combineBitmap = combineBitmap.asImageBitmap(),
+                                )
+                            }
                         }
+
+                        SizeType.LARGE_RECT,
+                        SizeType.MEDIUM_RECT,
+                        SizeType.SMALL_SQUARE,
+                        SizeType.MEDIUM_SQUARE,
+                        SizeType.LARGE_SQUARE -> {
+                            drawRectTable(
+                                this,
+                                pathClip = pathClip,
+                                widget = it,
+                                paint = paint,
+                                layoutSize = layoutSize,
+                                drawables = drawables,
+                                sizeType = it.sizeType,
+                                tableBgColor = color_0xFF9195A3.toArgb(),
+                                tableName = "A02",
+                                combineBgColor = color_0xFFFFFFFF.toArgb(),
+                                combineText = "20",
+                                bookTime = "1h25m",
+                                guestNum = "40",
+                                payAmountText = "$80.00",
+                            )
+                        }
+
+
 
                         else -> {}
                     }
                 }
             }
-        )
-    }
-}
-
-fun drawTableName(
-    canvas: Canvas,
-    widget: TableWidget,
-    layoutSize: LayoutSize,
-    drawables: Drawables,
-    tableName: String,
-    tableNameTextSize: Float,
-    tableNameTextColor: Int,
-    paint: Paint,
-    bookTime: String? = null,
-    bookTimeContentColor: Int = 0,
-) {
-
-    paint.textSize = tableNameTextSize
-    paint.setColor(tableNameTextColor)
-    paint.typeface = Typeface.DEFAULT_BOLD
-
-    if (bookTime == null) {
-        val textStartY = widget.offset.y + widget.radius + paint.textSize / 2 - paint.textSize / 6
-        canvas.drawText(   //绘制tableName
-            tableName,
-            widget.offset.x + widget.radius,
-            textStartY,
-            paint
-        )
-    } else {
-        val height = widget.radius * 2
-        //计算上下四个控件的间距
-        val div = (height - layoutSize.iconSizePx - layoutSize.largeCombinePaddingPx * 2
-            - layoutSize.bookingTimeZoneHeight - layoutSize.largeTableNameTextSizePx - layoutSize.guestZoneHeightPx) / 3
-
-        val startY =
-            widget.offset.y + height - layoutSize.guestZoneHeightPx - div - paint.textSize / 6
-        canvas.drawText(   //绘制tableName
-            tableName,
-            widget.offset.x + widget.radius,
-            startY,
-            paint
-        )
-
-        var contentWidth = layoutSize.iconSizePx
-        paint.typeface = Typeface.DEFAULT
-        paint.textSize = layoutSize.bookingTimeTextSizePx
-        val textWidth = paint.measureText(bookTime)
-        contentWidth += layoutSize.iconDiv + textWidth
-
-        val left = widget.offset.x + widget.radius - contentWidth / 2
-        //需去除底部Guest区域高度，div，bookingTimeZone高度一半
-        val top =
-            widget.offset.y + widget.radius * 2 - layoutSize.guestZoneHeightPx - layoutSize.largeTableNameTextSizePx - div * 2 - layoutSize.bookingTimeZoneHeight / 2 - layoutSize.iconSizePx / 2
-
-        drawIconWithText(
-            canvas = canvas,
-            layoutSize = layoutSize,
-            drawable = drawables.book,
-            paint = paint,
-            contentColor = bookTimeContentColor,
-            text = bookTime,
-            textWidth = textWidth,
-            left = left,
-            top = top,
-            div = layoutSize.iconDiv,
         )
     }
 }
@@ -322,28 +263,6 @@ fun drawSmallCircleTable2(
             colorFilter = ColorFilter.tint(color = Color(0xFF3E6BF6)),
         )
     }
-}
-
-fun drawCustomRoundRect(
-    canvas: Canvas,
-    x: Float,
-    y: Float,
-    width: Float,
-    height: Float,
-    paint: Paint,
-) {
-    // 定义全矩形
-    val fullRect = RectF(x, y, x + width, y + height)
-    // 圆角大小
-    val cornerRadius = 50f
-    // 绘制完整的圆角矩形
-    canvas.drawRoundRect(fullRect, cornerRadius, cornerRadius, paint)
-    // 覆盖右上角为尖角
-    val rightTopRect = RectF(x + width / 2, y, x + width, y + height / 2)
-    canvas.drawRect(rightTopRect, paint)
-    // 覆盖左下角为尖角
-    val leftBottomRect = RectF(x, y + height / 2, x + width / 2, y + height)
-    canvas.drawRect(leftBottomRect, paint)
 }
 
 //绘制bitmap

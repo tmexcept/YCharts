@@ -53,29 +53,37 @@ data class LayoutSize(
 
     val iconSizePx: Float = 16f,
     val iconDiv: Float = 2f,
-    val smallTableNameTextSizePx: Float = 20f,
-    val largeTableNameTextSizePx: Float = 30f,
+//    val tableNameSmallHeightPx: Float = 26f,
+//    val tableNameMediumHeightPx: Float = 40f,
+    val tableNameLargeHeightPx: Float = 48f,
+    val tableNameSmallTextSizePx: Float = 20f,
+    val tableNameLargeTextSizePx: Float = 30f,
 
     val bookingTimeTextSizePx: Float = 18f,
     val bookingTimeZoneHeight: Float = 32f,
 
     val combineTextSizePx: Float = 16f,
-    val smallCombinePaddingPx: Float = 2f,
-    val largeCombinePaddingPx: Float = 4.5f,
-    val combineBackgroundCorner: Float = 8f,
+    val combineSmallPaddingPx: Float = 2f,
+    val combineLargePaddingPx: Float = 4.5f,
+    val combineBgCornerPx: Float = 8f,
 
     val guestTextSizePx: Float = 18f,
-    val guestZoneHeightPx: Float = 32f,
+    val bottomBgHeightPx: Float = 32f,
+    val guestZoneHeightPxLittleRect: Float = 36f,
+
+    val rectRadius: Float = 12f,
+    val rectBottomPaddingLtr: Float = 12f,
 )
 
 enum class SizeType{
     SMALL_CIRCLE,
     MEDIUM_CIRCLE,
     LARGE_CIRCLE,
-    SMALL_RECT,
+    SMALL_SQUARE,
+    MEDIUM_SQUARE,
+    LARGE_SQUARE,
     MEDIUM_RECT,
     LARGE_RECT,
-    LARGE_RECT_,
     WALL,
     BAR,
     CHAIR,

@@ -30,6 +30,7 @@ fun drawCircleTable(
 
     tableName: String,
     tableNameTextColor: Int = color_0xFFFFFFFF.toArgb(),
+    tableBgColor: Int = color_0xFF14CABF.toArgb(),
 
     bookTime: String? = null,
     bookTimeContentColor: Int = color_0xFFFFFFFF.toArgb(),
@@ -50,8 +51,8 @@ fun drawCircleTable(
     }
     with(drawScope) {
         clipPath(path = pathClip) {
-            paint.setColor(color_0xFF14CABF.toArgb())
             drawContext.canvas.nativeCanvas.apply {
+                paint.setColor(tableBgColor)
                 drawCircle(
                     widget.offset.x + widget.radius,
                     widget.offset.y + widget.radius,
@@ -73,7 +74,7 @@ fun drawCircleTable(
                 )
 
                 if (sizeType != SizeType.SMALL_CIRCLE) {
-                    drawGuestNum(
+                    drawBottomContent(
                         canvas = this,
                         widget = widget,
                         paint = paint,
@@ -92,9 +93,9 @@ fun drawCircleTable(
                     drawables = drawables,
                     tableName = tableName,
                     tableNameTextSize = if (sizeType == SizeType.SMALL_CIRCLE) {
-                        layoutSize.smallTableNameTextSizePx
+                        layoutSize.tableNameSmallTextSizePx
                     } else {
-                        layoutSize.largeTableNameTextSizePx
+                        layoutSize.tableNameLargeTextSizePx
                     },
                     tableNameTextColor = tableNameTextColor,
                     paint = paint,
@@ -103,6 +104,72 @@ fun drawCircleTable(
                 )
             }
         }
+    }
+}
+
+private fun drawTableName(
+    canvas: Canvas,
+    widget: TableWidget,
+    layoutSize: LayoutSize,
+    drawables: Drawables,
+    tableName: String,
+    tableNameTextSize: Float,
+    tableNameTextColor: Int,
+    paint: Paint,
+    bookTime: String? = null,
+    bookTimeContentColor: Int = 0,
+) {
+
+    paint.setColor(tableNameTextColor)
+    paint.textSize = tableNameTextSize
+    paint.typeface = Typeface.DEFAULT_BOLD
+
+    if (bookTime == null) {
+        val textStartY = widget.offset.y + widget.radius + paint.textSize / 2 - paint.textSize / 6
+        canvas.drawText(   //绘制tableName
+            tableName,
+            widget.offset.x + widget.radius,
+            textStartY,
+            paint
+        )
+    } else {
+        val combineHeight = layoutSize.iconSizePx + layoutSize.combineLargePaddingPx * 2
+        val height = widget.radius * 2
+        //计算上下四个控件的间距
+        val div = (height - combineHeight
+            - layoutSize.bookingTimeZoneHeight - layoutSize.tableNameLargeTextSizePx - layoutSize.bottomBgHeightPx) / 3
+
+        val startY =
+            widget.offset.y + height - layoutSize.bottomBgHeightPx - div - layoutSize.tableNameLargeTextSizePx / 6
+        canvas.drawText(   //绘制tableName
+            tableName,
+            widget.offset.x + widget.radius,
+            startY,
+            paint
+        )
+
+        var contentWidth = layoutSize.iconSizePx
+        paint.typeface = Typeface.DEFAULT
+        paint.textSize = layoutSize.bookingTimeTextSizePx
+        val textWidth = paint.measureText(bookTime)
+        contentWidth += layoutSize.iconDiv + textWidth
+
+        val left = widget.offset.x + widget.radius - contentWidth / 2
+        //需去除底部Guest区域的高度、div、bookingTimeZone高度与booking文本差值的一半
+        val top = widget.offset.y + combineHeight + div + (layoutSize.bookingTimeZoneHeight - layoutSize.iconSizePx) / 2
+
+        drawIconWithText(
+            canvas = canvas,
+            layoutSize = layoutSize,
+            drawable = drawables.book,
+            paint = paint,
+            contentColor = bookTimeContentColor,
+            text = bookTime,
+            textWidth = textWidth,
+            left = left,
+            top = top,
+            div = layoutSize.iconDiv,
+        )
     }
 }
 
@@ -119,29 +186,29 @@ private fun drawCombineInfo(
 ) {
     var contentWidth = layoutSize.iconSizePx
     var textWidth = 0f
-    if (combineText != null) {
+    if (combineText != null && sizeType != SizeType.SMALL_CIRCLE) {
         paint.typeface = Typeface.DEFAULT
         paint.textSize = layoutSize.combineTextSizePx
         textWidth = paint.measureText(combineText)
         contentWidth += layoutSize.iconDiv + textWidth
     }
     val padding = if (sizeType == SizeType.SMALL_CIRCLE) {
-        layoutSize.smallCombinePaddingPx
+        layoutSize.combineSmallPaddingPx
     } else {
-        layoutSize.largeCombinePaddingPx
+        layoutSize.combineLargePaddingPx
     }
     val left = widget.offset.x + widget.radius - contentWidth / 2
     val top = widget.offset.y + padding
 
-    if (combineBgColor != 0) {
+    if (combineBgColor != 0 && sizeType != SizeType.SMALL_CIRCLE) {
         paint.setColor(combineBgColor)
         canvas.drawRoundRect(
             left - padding,
             top - padding - 10, //此处是让顶部圆角被clip掉
             left + contentWidth + padding,
             top + layoutSize.iconSizePx + padding,
-            layoutSize.combineBackgroundCorner,
-            layoutSize.combineBackgroundCorner,
+            layoutSize.combineBgCornerPx,
+            layoutSize.combineBgCornerPx,
             paint
         )
     }
@@ -152,7 +219,7 @@ private fun drawCombineInfo(
         drawable = drawable,
         paint = paint,
         contentColor = combineContentColor,
-        text = combineText,
+        text = if (sizeType == SizeType.SMALL_CIRCLE) null else combineText,
         textWidth = textWidth,
         left = left,
         top = top,
@@ -160,7 +227,7 @@ private fun drawCombineInfo(
     )
 }
 
-private fun drawGuestNum(
+private fun drawBottomContent(
     canvas: Canvas,
     widget: TableWidget,
     layoutSize: LayoutSize,
@@ -180,7 +247,7 @@ private fun drawGuestNum(
             left,
             bottom,
             left + widget.radius * 2,
-            bottom - layoutSize.guestZoneHeightPx,
+            bottom - layoutSize.bottomBgHeightPx,
             paint
         )
     }
@@ -201,7 +268,7 @@ private fun drawGuestNum(
         text = guestText,
         textWidth = textWidth,
         left = left + widget.radius - contentWidth / 2,
-        top = bottom - layoutSize.guestZoneHeightPx / 2 - layoutSize.iconSizePx / 2,
+        top = bottom - layoutSize.bottomBgHeightPx / 2 - layoutSize.iconSizePx / 2,
         div = layoutSize.iconDiv,
     )
 }
