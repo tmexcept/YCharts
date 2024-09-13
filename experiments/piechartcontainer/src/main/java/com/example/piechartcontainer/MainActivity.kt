@@ -118,6 +118,20 @@ class MainActivity : ComponentActivity() {
                                     height = 280f,
                                     sizeType = SizeType.LARGE_RECT,
                                 ),
+                                TableWidget(
+                                    offset = Offset(100f, 600f),
+                                    angle = 0f,
+                                    width = 320f,
+                                    height = 100f,
+                                    sizeType = SizeType.WALL,
+                                ),
+                                TableWidget(
+                                    offset = Offset(200f, 700f),
+                                    angle = 90f,
+                                    width = 320f,
+                                    height = 100f,
+                                    sizeType = SizeType.WALL,
+                                ),
                             )
                         )
                     }

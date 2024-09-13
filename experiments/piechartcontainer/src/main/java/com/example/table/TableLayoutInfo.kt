@@ -12,6 +12,7 @@ data class Drawables(
     val chair: Drawable? = null,
     val guest: Drawable? = null,
     val book: Drawable? = null,
+    val wall: Drawable? = null,
 )
 
 data class TableLayoutInfo(
@@ -73,6 +74,8 @@ data class LayoutSize(
 
     val rectRadius: Float = 12f,
     val rectBottomPaddingLtr: Float = 12f,
+    val wallWidth: Float = 81f,
+    val wallHeight: Float = 81f,
 )
 
 enum class SizeType{

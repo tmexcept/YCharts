@@ -82,6 +82,9 @@ fun TableZoneCanvasContainer(
 
                     rectRadius = 12.dp.toPx(),
                     rectBottomPaddingLtr = 12.dp.toPx(),
+
+                    wallWidth = 32.dp.toPx(),
+                    wallHeight = 32.dp.toPx(),
                 )
             )
         }
@@ -93,6 +96,7 @@ fun TableZoneCanvasContainer(
                 chair = ContextCompat.getDrawable(context, R.drawable.icon_chair),
                 guest = ContextCompat.getDrawable(context, R.drawable.icon_customer),
                 book = ContextCompat.getDrawable(context, R.drawable.ic_hourglass),
+                wall = ContextCompat.getDrawable(context, R.drawable.ic_pay_ali),
             )
         )
     }
@@ -184,6 +188,16 @@ fun TableZoneCanvasContainer(
                                 guestNum = "40",
                                 payAmountText = "$80.00",
                             )
+                        }
+                        SizeType.WALL -> {
+                            drawables.wall?.let { wall ->
+                                drawWall(
+                                    this,
+                                    widget = it,
+                                    layoutSize = layoutSize,
+                                    drawable = wall,
+                                )
+                            }
                         }
 
 
