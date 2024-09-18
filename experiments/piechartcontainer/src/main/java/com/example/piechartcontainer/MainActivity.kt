@@ -4,19 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YChartsTheme
-import com.example.table.SizeType
-import com.example.table.TableWidget
 import com.example.table.TableZoneCanvasContainer
 
 class MainActivity : ComponentActivity() {
@@ -59,81 +60,7 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Pie Chart")
                         }
 
-
-                        TableZoneCanvasContainer(
-                            modifier = Modifier
-                                .width(1440.dp)
-                                .height(1080.dp),
-                            widgets = listOf(
-                                TableWidget(
-                                    offset = Offset(100f, 100f),
-                                    angle = 0f,
-                                    radius = 60f,
-                                    sizeType = SizeType.SMALL_CIRCLE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(300f, 100f),
-                                    angle = 0f,
-                                    radius = 100f,
-                                    sizeType = SizeType.MEDIUM_CIRCLE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(500f, 100f),
-                                    angle = 0f,
-                                    radius = 140f,
-                                    sizeType = SizeType.LARGE_CIRCLE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(800f, 100f),
-                                    angle = 0f,
-                                    width = 120f,
-                                    height = 120f,
-                                    sizeType = SizeType.SMALL_SQUARE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(1000f, 100f),
-                                    angle = 0f,
-                                    width = 200f,
-                                    height = 200f,
-                                    sizeType = SizeType.MEDIUM_SQUARE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(1300f, 100f),
-                                    angle = 0f,
-                                    width = 280f,
-                                    height = 280f,
-                                    sizeType = SizeType.LARGE_SQUARE,
-                                ),
-                                TableWidget(
-                                    offset = Offset(1000f, 400f),
-                                    angle = 0f,
-                                    width = 260f,
-                                    height = 200f,
-                                    sizeType = SizeType.MEDIUM_RECT,
-                                ),
-                                TableWidget(
-                                    offset = Offset(1300f, 400f),
-                                    angle = 0f,
-                                    width = 360f,
-                                    height = 280f,
-                                    sizeType = SizeType.LARGE_RECT,
-                                ),
-                                TableWidget(
-                                    offset = Offset(100f, 600f),
-                                    angle = 0f,
-                                    width = 320f,
-                                    height = 100f,
-                                    sizeType = SizeType.WALL,
-                                ),
-                                TableWidget(
-                                    offset = Offset(200f, 700f),
-                                    angle = 90f,
-                                    width = 320f,
-                                    height = 100f,
-                                    sizeType = SizeType.WALL,
-                                ),
-                            )
-                        )
+                        TableZoneCanvasContainer()
                     }
                 }
             }

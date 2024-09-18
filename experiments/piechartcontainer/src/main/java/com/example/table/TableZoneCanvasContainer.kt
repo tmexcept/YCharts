@@ -4,30 +4,32 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.Typeface
 import android.text.TextPaint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -35,56 +37,202 @@ import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.example.piechartcontainer.R
 import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF1D2129
+import com.example.piechartcontainer.ui.theme.color_0xFF4E5969
 import com.example.piechartcontainer.ui.theme.color_0xFF9195A3
+import com.example.piechartcontainer.ui.theme.color_0xFF9195A4
+import com.example.piechartcontainer.ui.theme.color_0xFFFDFDFD
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
 
+val widgets = listOf(
+    TableWidget(
+        offset = Offset(100f, 100f),
+        angle = 0f,
+        radius = 60f,
+        sizeType = SizeType.SMALL_CIRCLE,
+    ),
+    TableWidget(
+        offset = Offset(300f, 100f),
+        angle = 0f,
+        radius = 100f,
+        sizeType = SizeType.MEDIUM_CIRCLE,
+    ),
+    TableWidget(
+        offset = Offset(500f, 100f),
+        angle = 0f,
+        radius = 140f,
+        sizeType = SizeType.LARGE_CIRCLE,
+    ),
+    TableWidget(
+        offset = Offset(800f, 100f),
+        angle = 0f,
+        width = 120f,
+        height = 120f,
+        sizeType = SizeType.SMALL_SQUARE,
+    ),
+    TableWidget(
+        offset = Offset(1000f, 100f),
+        angle = 0f,
+        width = 200f,
+        height = 200f,
+        sizeType = SizeType.MEDIUM_SQUARE,
+    ),
+    TableWidget(
+        offset = Offset(1300f, 100f),
+        angle = 0f,
+        width = 280f,
+        height = 280f,
+        sizeType = SizeType.LARGE_SQUARE,
+    ),
+    TableWidget(
+        offset = Offset(1000f, 400f),
+        angle = 0f,
+        width = 260f,
+        height = 200f,
+        sizeType = SizeType.MEDIUM_RECT,
+    ),
+    TableWidget(
+        offset = Offset(1300f, 400f),
+        angle = 0f,
+        width = 360f,
+        height = 280f,
+        sizeType = SizeType.LARGE_RECT,
+    ),
+    TableWidget(
+        offset = Offset(100f, 600f),
+        angle = 0f,
+        width = 320f,
+        height = 100f,
+        sizeType = SizeType.WALL,
+    ),
+    TableWidget(
+        offset = Offset(200f, 700f),
+        angle = 90f,
+        width = 320f,
+        height = 100f,
+        sizeType = SizeType.WALL,
+    ),
+)
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
-fun TableZoneCanvasContainer(
+fun TableZoneCanvasContainer() {
+
+    val density = LocalDensity.current
+    var width by remember {
+        mutableStateOf(0.dp)
+    }
+
+    var height by remember {
+        mutableStateOf(0.dp)
+    }
+
+    var zoneScale by remember {
+        mutableStateOf(1f)
+    }
+
+    val zoneHeight = 1080f
+    val zoneWidth = 1440f
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color_0xFF4E5969)
+            .onGloballyPositioned { coordinates ->
+                if (width != 0.dp && height != 0.dp) {
+                    return@onGloballyPositioned
+                }
+                val rect = coordinates.boundsInWindow()
+                Log.e("huhu", "rect.width=${rect.width},  rect.height=${rect.height}")
+                if (rect.height / rect.width > 0.75f) { //上下居中
+                    val destHeightPx = rect.width * 0.75f
+                    density.run {
+                        height = destHeightPx
+                            .toInt()
+                            .toDp()
+                        width = rect.width
+                            .toInt()
+                            .toDp()
+                    }
+
+                    zoneScale = zoneWidth / rect.width
+                } else { //左右居中
+                    val destWidthPx = rect.height / 0.75f
+                    density.run {
+                        width = destWidthPx.toDp()
+                        height = rect.height
+                            .toInt()
+                            .toDp()
+                    }
+
+                    zoneScale = zoneHeight / rect.height
+                }
+                Log.e("huhu", "width=$width,  height=$height")
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        //- POS 区域长宽比大于4:3时（POS 屏幕更宽）可固定BO预定义平面图的高度，等比缩放平面图并在POS上居中；
+        //- POS 区域长宽比小于4:3时（POS 屏幕更宽）可固定BO预定义平面图的宽度，等比缩放平面图高度并在屏幕中上下居中；
+        if (width > 0.dp && height > 0.dp) {
+            Box(
+                modifier = Modifier
+                    .width(width)
+                    .height(height)
+                    .background(color_0xFFFDFDFD)
+            ) {
+                TableZoneCanvas(
+                    modifier = Modifier
+                        .width(width)
+                        .height(height),
+                    widgets = widgets,
+                    zoneScale = zoneScale
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TableZoneCanvas(
     modifier: Modifier = Modifier,
     widgets: List<TableWidget>,
+    zoneScale: Float = 1.0f,
 ) {
     val context = LocalContext.current
-    val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
     val layoutSize by with(density) {
         remember {
             mutableStateOf(
                 LayoutSize(
-                    iconSizePx = 16.dp.toPx(),
-                    tableNameSmallTextSizePx = 20.sp.toPx(),
-                    tableNameLargeTextSizePx = 30.sp.toPx(),
-                    tableNameLargeHeightPx = 48.dp.toPx(),
+                    iconSizePx = 16.dp.toPx() * zoneScale,
+                    tableNameSmallTextSizePx = 20.sp.toPx() * zoneScale,
+                    tableNameLargeTextSizePx = 30.sp.toPx() * zoneScale,
+                    tableNameLargeHeightPx = 48.dp.toPx() * zoneScale,
 
-                    combineTextSizePx = 16.sp.toPx(),
-                    combineSmallPaddingPx = 2.dp.toPx(),
-                    combineLargePaddingPx = 4.5.dp.toPx(),
-                    combineBgCornerPx = 8.dp.toPx(),
-                    iconDiv = 2.dp.toPx(),
+                    combineTextSizePx = 16.sp.toPx() * zoneScale,
+                    combineSmallPaddingPx = 2.dp.toPx() * zoneScale,
+                    combineLargePaddingPx = 4.5.dp.toPx() * zoneScale,
+                    combineBgCornerPx = 8.dp.toPx() * zoneScale,
+                    iconDiv = 2.dp.toPx() * zoneScale,
 
-                    guestTextSizePx = 16.sp.toPx(),
-                    bottomBgHeightPx = 32.dp.toPx(),
-                    guestZoneHeightPxLittleRect = 16.dp.toPx(),
+                    guestTextSizePx = 16.sp.toPx() * zoneScale,
+                    bottomBgHeightPx = 32.dp.toPx() * zoneScale,
+                    guestZoneHeightPxLittleRect = 16.dp.toPx() * zoneScale,
 
-                    bookingTimeTextSizePx = 16.sp.toPx(),
-                    bookingTimeZoneHeight = 32.dp.toPx(),
+                    bookingTimeTextSizePx = 16.sp.toPx() * zoneScale,
+                    bookingTimeZoneHeight = 32.dp.toPx() * zoneScale,
 
-                    rectRadius = 12.dp.toPx(),
-                    rectBottomPaddingLtr = 12.dp.toPx(),
+                    rectRadius = 12.dp.toPx() * zoneScale,
+                    rectBottomPaddingLtr = 12.dp.toPx() * zoneScale,
 
-                    wallWidth = 32.dp.toPx(),
-                    wallHeight = 32.dp.toPx(),
+                    wallWidth = 32.dp.toPx() * zoneScale,
+                    wallHeight = 32.dp.toPx() * zoneScale,
                 )
             )
         }
@@ -101,22 +249,10 @@ fun TableZoneCanvasContainer(
         )
     }
 
-    val combineBitmap by remember {
-        mutableStateOf(
-            drawables.combine!!.toBitmap(
-                layoutSize.iconSizePx.toInt(),
-                layoutSize.iconSizePx.toInt()
-            )
-        )
-    }
-
     val paint by remember {
         mutableStateOf(
             Paint().apply {
-                color = color_0xFF1D2129.toArgb()
-                textSize = layoutSize.tableNameSmallTextSizePx
                 textAlign = Paint.Align.CENTER
-                typeface = Typeface.DEFAULT_BOLD
                 isAntiAlias = true  //开启抗锯齿
             }
         )
@@ -125,89 +261,72 @@ fun TableZoneCanvasContainer(
         mutableStateOf(Path())
     }
 
-    Box(
-        modifier = modifier.clipToBounds()
-    ) {
-        Canvas(modifier = modifier
-            .align(Alignment.Center)
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .background(Color(0xFFC9CDD4)),
-            onDraw = {
-                widgets.forEach {
-                    when (it.sizeType) {
-                        SizeType.MEDIUM_CIRCLE,
-                        SizeType.SMALL_CIRCLE,
-                        SizeType.LARGE_CIRCLE -> {
-                            drawCircleTable(
-                                this,
-                                pathClip = pathClip,
-                                widget = it,
-                                paint = paint,
-                                layoutSize = layoutSize,
-                                drawables = drawables,
-                                sizeType = it.sizeType,
-                                tableName = "A02",
-                                tableBgColor = color_0xFF14CABF.toArgb(),
-                                combineBgColor = color_0xFFFFFFFF.toArgb(),
-                                combineText = "20",
-                                bookTime = "1h25m",
-                                guestZoneText = "40",
-                            )
-
-                            if(it.sizeType == SizeType.SMALL_CIRCLE) {
-                                drawSmallCircleTable2(
-                                    "A02", textMeasurer, this,
-                                    yOffset = 400,
-                                    circleTable = it,
-                                    tableColor = color_0xFF14CABF,
-                                    layoutSize = layoutSize,
-                                    combineBitmap = combineBitmap.asImageBitmap(),
-                                )
-                            }
-                        }
-
-                        SizeType.LARGE_RECT,
-                        SizeType.MEDIUM_RECT,
-                        SizeType.SMALL_SQUARE,
-                        SizeType.MEDIUM_SQUARE,
-                        SizeType.LARGE_SQUARE -> {
-                            drawRectTable(
-                                this,
-                                pathClip = pathClip,
-                                widget = it,
-                                paint = paint,
-                                layoutSize = layoutSize,
-                                drawables = drawables,
-                                sizeType = it.sizeType,
-                                tableBgColor = color_0xFF9195A3.toArgb(),
-                                tableName = "A02",
-                                combineBgColor = color_0xFFFFFFFF.toArgb(),
-                                combineText = "20",
-                                bookTime = "1h25m",
-                                guestNum = "40",
-                                payAmountText = "$80.00",
-                            )
-                        }
-                        SizeType.WALL -> {
-                            drawables.wall?.let { wall ->
-                                drawWall(
-                                    this,
-                                    widget = it,
-                                    layoutSize = layoutSize,
-                                    drawable = wall,
-                                )
-                            }
-                        }
-
-
-
-                        else -> {}
+    Canvas(modifier = modifier,
+        onDraw = {
+            widgets.forEach {
+                when (it.sizeType) {
+                    SizeType.MEDIUM_CIRCLE,
+                    SizeType.SMALL_CIRCLE,
+                    SizeType.LARGE_CIRCLE,
+                    -> {
+                        drawCircleTable(
+                            this,
+                            pathClip = pathClip,
+                            widget = it,
+                            paint = paint,
+                            layoutSize = layoutSize,
+                            drawables = drawables,
+                            sizeType = it.sizeType,
+                            tableName = "A02",
+                            tableBgColor = color_0xFF14CABF.toArgb(),
+                            combineBgColor = color_0xFFFFFFFF.toArgb(),
+                            combineText = "20",
+                            bookTime = "1h25m",
+                            guestZoneText = "40",
+                        )
                     }
+
+                    SizeType.LARGE_RECT,
+                    SizeType.MEDIUM_RECT,
+                    SizeType.SMALL_SQUARE,
+                    SizeType.MEDIUM_SQUARE,
+                    SizeType.LARGE_SQUARE,
+                    -> {
+                        drawRectTable(
+                            this,
+                            pathClip = pathClip,
+                            widget = it,
+                            paint = paint,
+                            layoutSize = layoutSize,
+                            drawables = drawables,
+                            sizeType = it.sizeType,
+                            tableBgColor = color_0xFF9195A3.toArgb(),
+                            tableName = "A02",
+                            combineBgColor = color_0xFFFFFFFF.toArgb(),
+                            combineText = "20",
+                            bookTime = "1h25m",
+                            guestNum = "40",
+                            payAmountText = "$80.00",
+                        )
+                    }
+
+                    SizeType.WALL -> {
+                        drawables.wall?.let { wall ->
+                            drawWall(
+                                this,
+                                widget = it,
+                                layoutSize = layoutSize,
+                                drawable = wall,
+                            )
+                        }
+                    }
+
+
+                    else -> {}
                 }
             }
-        )
-    }
+        }
+    )
 }
 
 @OptIn(ExperimentalTextApi::class)
