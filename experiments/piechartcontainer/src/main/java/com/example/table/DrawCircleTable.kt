@@ -23,21 +23,10 @@ fun drawCircleTable(
     layoutSize: LayoutSize,
     drawables: Drawables,
     sizeType: SizeType,
-
-    combineBgColor: Int = 0,
     combineText: String? = null,
-    combineContentColor: Int = color_0xFF4E8AFF.toArgb(),
-
     tableName: String,
-    tableNameTextColor: Int = color_0xFFFFFFFF.toArgb(),
-    tableBgColor: Int = color_0xFF14CABF.toArgb(),
-
     bookTime: String? = null,
-    bookTimeContentColor: Int = color_0xFFFFFFFF.toArgb(),
-
     guestZoneText: String = "40",
-    guestZoneBgColor: Int = 0,
-    guestZoneContentColor: Int = color_0xFF212121.toArgb(),
 ) {
     pathClip.apply {
         val offsetX = widget.offset.x
@@ -52,7 +41,7 @@ fun drawCircleTable(
     with(drawScope) {
         clipPath(path = pathClip) {
             drawContext.canvas.nativeCanvas.apply {
-                paint.setColor(tableBgColor)
+                paint.setColor(widget.widgetColor.tableColor)
                 drawCircle(
                     widget.offset.x + widget.radius,
                     widget.offset.y + widget.radius,
@@ -60,17 +49,17 @@ fun drawCircleTable(
                     paint
                 )
 
-                drawables.combine?.setTint(combineContentColor)
+                drawables.combine?.setTint(widget.widgetColor.combineContentColor)
                 drawCombineInfo(
                     canvas = this,
                     widget = widget,
                     paint = paint,
                     layoutSize = layoutSize,
                     drawable = drawables.combine,
-                    combineBgColor = combineBgColor,
+                    combineBgColor = widget.widgetColor.combineBgColor,
                     sizeType = sizeType,
                     combineText = combineText,
-                    combineContentColor = combineContentColor,
+                    combineContentColor = widget.widgetColor.combineContentColor,
                 )
 
                 if (sizeType != SizeType.SMALL_CIRCLE) {
@@ -80,9 +69,9 @@ fun drawCircleTable(
                         paint = paint,
                         layoutSize = layoutSize,
                         drawable = drawables.chair,
-                        guestZoneBgColor = guestZoneBgColor,
+                        guestZoneBgColor = widget.widgetColor.bottomBgColor,
                         guestText = guestZoneText,
-                        guestContentColor = guestZoneContentColor
+                        guestContentColor = widget.widgetColor.bottomContentColor
                     )
                 }
 
@@ -97,10 +86,9 @@ fun drawCircleTable(
                     } else {
                         layoutSize.tableNameLargeTextSizePx
                     },
-                    tableNameTextColor = tableNameTextColor,
+                    tableNameTextColor = widget.widgetColor.tableNameColor,
                     paint = paint,
                     bookTime = if (sizeType != SizeType.LARGE_CIRCLE) null else bookTime,
-                    bookTimeContentColor = bookTimeContentColor,
                 )
             }
         }
@@ -117,7 +105,6 @@ private fun drawTableName(
     tableNameTextColor: Int,
     paint: Paint,
     bookTime: String? = null,
-    bookTimeContentColor: Int = 0,
 ) {
 
     paint.setColor(tableNameTextColor)
@@ -163,7 +150,7 @@ private fun drawTableName(
             layoutSize = layoutSize,
             drawable = drawables.book,
             paint = paint,
-            contentColor = bookTimeContentColor,
+            contentColor = tableNameTextColor,
             text = bookTime,
             textWidth = textWidth,
             left = left,
@@ -180,9 +167,9 @@ private fun drawCombineInfo(
     drawable: Drawable? = null,
     paint: Paint,
     sizeType: SizeType,
-    combineBgColor: Int = 0,
+    combineBgColor: Int? = null,
     combineText: String? = null,
-    combineContentColor: Int = color_0xFF4E8AFF.toArgb(),
+    combineContentColor: Int,
 ) {
     var contentWidth = layoutSize.iconSizePx
     var textWidth = 0f
@@ -200,7 +187,7 @@ private fun drawCombineInfo(
     val left = widget.offset.x + widget.radius - contentWidth / 2
     val top = widget.offset.y + padding
 
-    if (combineBgColor != 0 && sizeType != SizeType.SMALL_CIRCLE) {
+    if (combineBgColor != null && sizeType != SizeType.SMALL_CIRCLE) {
         paint.setColor(combineBgColor)
         canvas.drawRoundRect(
             left - padding,
@@ -233,15 +220,15 @@ private fun drawBottomContent(
     layoutSize: LayoutSize,
     drawable: Drawable? = null,
     paint: Paint,
-    guestZoneBgColor: Int = 0,
+    guestZoneBgColor: Int? = null,
     guestText: String,
-    guestContentColor: Int = color_0xFF4E8AFF.toArgb(),
+    guestContentColor: Int,
 ) {
 
     val left = widget.offset.x
     val bottom = widget.offset.y + widget.radius * 2
 
-    if (guestZoneBgColor != 0) {
+    if (guestZoneBgColor != null) {
         paint.setColor(guestZoneBgColor)
         canvas.drawRect(
             left,

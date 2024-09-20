@@ -40,70 +40,252 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.piechartcontainer.R
 import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF1D2129
 import com.example.piechartcontainer.ui.theme.color_0xFF4E5969
 import com.example.piechartcontainer.ui.theme.color_0xFF9195A3
-import com.example.piechartcontainer.ui.theme.color_0xFF9195A4
 import com.example.piechartcontainer.ui.theme.color_0xFFFDFDFD
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
 
-val widgets = listOf(
+val circleSmall = listOf(
     TableWidget(
-        offset = Offset(100f, 100f),
-        angle = 0f,
-        radius = 60f,
+        offset = Offset(10f, 20f),
+        radius = 30f,
         sizeType = SizeType.SMALL_CIRCLE,
+        widgetColor = WidgetColor.Empty().copy(
+            combineBgColor = null,
+        )
     ),
     TableWidget(
-        offset = Offset(300f, 100f),
+        offset = Offset(200f, 20f),
+        radius = 30f,
+        sizeType = SizeType.SMALL_CIRCLE,
+        widgetColor = WidgetColor.Used().copy(
+            combineBgColor = null,
+        )
+    ),
+    TableWidget(
+        offset = Offset(400f, 20f),
+        radius = 30f,
+        sizeType = SizeType.SMALL_CIRCLE,
+        widgetColor = WidgetColor.Booked().copy(
+            combineBgColor = null,
+        )
+    ),
+    TableWidget(
+        offset = Offset(600f, 20f),
+        radius = 30f,
+        sizeType = SizeType.SMALL_CIRCLE,
+        widgetColor = WidgetColor.NeedClean().copy(
+            combineBgColor = null,
+        )
+    ),
+)
+
+val circleMedium = listOf(
+    TableWidget(
+        offset = Offset(10f, 100f),
+        radius = 50f,
+        sizeType = SizeType.MEDIUM_CIRCLE,
+        widgetColor = WidgetColor.Empty()
+    ),
+    TableWidget(
+        offset = Offset(200f, 100f),
+        radius = 50f,
+        sizeType = SizeType.MEDIUM_CIRCLE,
+        widgetColor = WidgetColor.Used()
+    ),
+    TableWidget(
+        offset = Offset(400f, 100f),
+        radius = 50f,
+        sizeType = SizeType.MEDIUM_CIRCLE,
+        widgetColor = WidgetColor.Booked()
+    ),
+    TableWidget(
+        offset = Offset(600f, 100f),
+        radius = 50f,
+        sizeType = SizeType.MEDIUM_CIRCLE,
+        widgetColor = WidgetColor.NeedClean()
+    ),
+)
+
+val circleLarge = listOf(
+    TableWidget(
+        offset = Offset(10f, 240f),
+        radius = 70f,
+        sizeType = SizeType.LARGE_CIRCLE,
+        widgetColor = WidgetColor.Empty()
+    ),
+    TableWidget(
+        offset = Offset(200f, 240f),
+        radius = 70f,
+        sizeType = SizeType.LARGE_CIRCLE,
+        widgetColor = WidgetColor.Used()
+    ),
+    TableWidget(
+        offset = Offset(400f, 240f),
+        radius = 70f,
+        sizeType = SizeType.LARGE_CIRCLE,
+        widgetColor = WidgetColor.Booked()
+    ),
+    TableWidget(
+        offset = Offset(600f, 240f),
+        radius = 70f,
+        sizeType = SizeType.LARGE_CIRCLE,
+        widgetColor = WidgetColor.NeedClean()
+    ),
+)
+
+val rectSmall = listOf(
+    TableWidget(
+        offset = Offset(10f, 400f),
+        width = 60f,
+        height = 60f,
+        sizeType = SizeType.SMALL_RECT,
+        widgetColor = WidgetColor.Empty().copy(
+            combineBgColor = null,
+        )
+    ),
+    TableWidget(
+        offset = Offset(200f, 400f),
+        width = 60f,
+        height = 60f,
+        sizeType = SizeType.SMALL_RECT,
+        widgetColor = WidgetColor.Used().copy(
+            combineBgColor = null,
+        )
+    ),
+    TableWidget(
+        offset = Offset(400f, 400f),
+        width = 60f,
+        height = 60f,
+        sizeType = SizeType.SMALL_RECT,
+        widgetColor = WidgetColor.Booked().copy(
+            combineBgColor = null,
+        )
+    ),
+    TableWidget(
+        offset = Offset(600f, 400f),
+        width = 60f,
+        height = 60f,
+        sizeType = SizeType.SMALL_RECT,
+        widgetColor = WidgetColor.NeedClean().copy(
+            combineBgColor = null,
+        )
+    ),
+)
+
+val rectMedium = listOf(
+    TableWidget(
+        offset = Offset(10f, 500f),
+        width = 100f,
+        height = 100f,
+        sizeType = SizeType.MEDIUM_RECT,
+        widgetColor = WidgetColor.Empty()
+    ),
+    TableWidget(
+        offset = Offset(200f, 500f),
+        width = 100f,
+        height = 100f,
+        sizeType = SizeType.MEDIUM_RECT,
+        widgetColor = WidgetColor.Used()
+    ),
+    TableWidget(
+        offset = Offset(400f, 500f),
+        width = 100f,
+        height = 100f,
+        sizeType = SizeType.MEDIUM_RECT,
+        widgetColor = WidgetColor.Booked()
+    ),
+    TableWidget(
+        offset = Offset(600f, 500f),
+        width = 100f,
+        height = 100f,
+        sizeType = SizeType.MEDIUM_RECT,
+        widgetColor = WidgetColor.NeedClean()
+    ),
+)
+
+val rectLarge = listOf(
+    TableWidget(
+        offset = Offset(10f, 640f),
+        width = 140f,
+        height = 140f,
+        sizeType = SizeType.LARGE_RECT,
+        widgetColor = WidgetColor.Empty()
+    ),
+    TableWidget(
+        offset = Offset(200f, 640f),
+        width = 140f,
+        height = 140f,
+        sizeType = SizeType.LARGE_RECT,
+        widgetColor = WidgetColor.Used()
+    ),
+    TableWidget(
+        offset = Offset(400f, 640f),
+        width = 140f,
+        height = 140f,
+        sizeType = SizeType.LARGE_RECT,
+        widgetColor = WidgetColor.Booked()
+    ),
+    TableWidget(
+        offset = Offset(600f, 640f),
+        width = 140f,
+        height = 140f,
+        sizeType = SizeType.LARGE_RECT,
+        widgetColor = WidgetColor.NeedClean()
+    ),
+)
+
+val widgets = listOf(
+    TableWidget(
+        offset = Offset(80f, 20f),
         angle = 0f,
-        radius = 100f,
+        radius = 50f,
         sizeType = SizeType.MEDIUM_CIRCLE,
     ),
     TableWidget(
-        offset = Offset(500f, 100f),
+        offset = Offset(200f, 20f),
         angle = 0f,
-        radius = 140f,
+        radius = 70f,
         sizeType = SizeType.LARGE_CIRCLE,
     ),
     TableWidget(
-        offset = Offset(800f, 100f),
+        offset = Offset(350f, 20f),
         angle = 0f,
-        width = 120f,
-        height = 120f,
-        sizeType = SizeType.SMALL_SQUARE,
+        width = 60f,
+        height = 60f,
+        sizeType = SizeType.SMALL_RECT,
     ),
     TableWidget(
-        offset = Offset(1000f, 100f),
+        offset = Offset(420f, 20f),
         angle = 0f,
-        width = 200f,
-        height = 200f,
-        sizeType = SizeType.MEDIUM_SQUARE,
-    ),
-    TableWidget(
-        offset = Offset(1300f, 100f),
-        angle = 0f,
-        width = 280f,
-        height = 280f,
-        sizeType = SizeType.LARGE_SQUARE,
-    ),
-    TableWidget(
-        offset = Offset(1000f, 400f),
-        angle = 0f,
-        width = 260f,
-        height = 200f,
+        width = 100f,
+        height = 100f,
         sizeType = SizeType.MEDIUM_RECT,
     ),
     TableWidget(
-        offset = Offset(1300f, 400f),
+        offset = Offset(600f, 20f),
         angle = 0f,
-        width = 360f,
-        height = 280f,
+        width = 140f,
+        height = 140f,
         sizeType = SizeType.LARGE_RECT,
+    ),
+    TableWidget(
+        offset = Offset(420f, 200f),
+        angle = 0f,
+        width = 130f,
+        height = 100f,
+        sizeType = SizeType.MEDIUM_RECT_WIDTH,
+    ),
+    TableWidget(
+        offset = Offset(600f, 200f),
+        angle = 0f,
+        width = 180f,
+        height = 140f,
+        sizeType = SizeType.LARGE_RECT_WIDTH,
     ),
     TableWidget(
         offset = Offset(100f, 600f),
@@ -120,6 +302,10 @@ val widgets = listOf(
         sizeType = SizeType.WALL,
     ),
 )
+//圆桌(直径) 小：[60~100px） 中：[100-140px） 大：[>=140px，∞)
+//矩形(高度) 小：[60~100px） 中：[100-140px） 大：[>=140px）
+//- 矩形桌台超宽（宽度 >=160px）时，展示金额。
+private const val DESIGN_H_W_SCALE = 0.75f //设计的高宽比例3:4
 
 @Composable
 fun TableZoneCanvasContainer() {
@@ -129,12 +315,41 @@ fun TableZoneCanvasContainer() {
         mutableStateOf(0.dp)
     }
 
+    val widgets by remember {
+        val list = mutableListOf<TableWidget>()
+        list.addAll(circleSmall)
+        list.addAll(circleMedium)
+        list.addAll(circleLarge)
+        list.addAll(rectSmall)
+        list.addAll(rectMedium)
+        list.addAll(rectLarge)
+        mutableStateOf(list.toList())
+    }
+
     var height by remember {
         mutableStateOf(0.dp)
     }
 
     var zoneScale by remember {
         mutableStateOf(1f)
+    }
+
+    var widgetRealSize by remember {
+        mutableStateOf(widgets)
+    }
+
+    fun changeWidgetSize(scale: Float){
+        widgetRealSize = widgets.map {
+            it.copy(
+                offset = it.offset.copy(
+                    x = it.offset.x * scale,
+                    y = it.offset.y * scale
+                ),
+                radius = it.radius * scale,
+                width = it.width * scale,
+                height = it.height * scale,
+            )
+        }
     }
 
     val zoneHeight = 1080f
@@ -150,8 +365,8 @@ fun TableZoneCanvasContainer() {
                 }
                 val rect = coordinates.boundsInWindow()
                 Log.e("huhu", "rect.width=${rect.width},  rect.height=${rect.height}")
-                if (rect.height / rect.width > 0.75f) { //上下居中
-                    val destHeightPx = rect.width * 0.75f
+                if (rect.height / rect.width > DESIGN_H_W_SCALE) { //上下居中
+                    val destHeightPx = rect.width * DESIGN_H_W_SCALE
                     density.run {
                         height = destHeightPx
                             .toInt()
@@ -162,8 +377,9 @@ fun TableZoneCanvasContainer() {
                     }
 
                     zoneScale = zoneWidth / rect.width
+                    changeWidgetSize(zoneScale)
                 } else { //左右居中
-                    val destWidthPx = rect.height / 0.75f
+                    val destWidthPx = rect.height / DESIGN_H_W_SCALE
                     density.run {
                         width = destWidthPx.toDp()
                         height = rect.height
@@ -172,6 +388,7 @@ fun TableZoneCanvasContainer() {
                     }
 
                     zoneScale = zoneHeight / rect.height
+                    changeWidgetSize(zoneScale)
                 }
                 Log.e("huhu", "width=$width,  height=$height")
             },
@@ -190,7 +407,7 @@ fun TableZoneCanvasContainer() {
                     modifier = Modifier
                         .width(width)
                         .height(height),
-                    widgets = widgets,
+                    widgets = widgetRealSize,
                     zoneScale = zoneScale
                 )
             }
@@ -205,38 +422,36 @@ fun TableZoneCanvas(
     zoneScale: Float = 1.0f,
 ) {
     val context = LocalContext.current
-    val density = LocalDensity.current
-    val layoutSize by with(density) {
-        remember {
-            mutableStateOf(
-                LayoutSize(
-                    iconSizePx = 16.dp.toPx() * zoneScale,
-                    tableNameSmallTextSizePx = 20.sp.toPx() * zoneScale,
-                    tableNameLargeTextSizePx = 30.sp.toPx() * zoneScale,
-                    tableNameLargeHeightPx = 48.dp.toPx() * zoneScale,
+    val layoutSize by remember {
+        mutableStateOf(
+            LayoutSize(
+                iconSizePx = 16f * zoneScale,
+                tableNameSmallTextSizePx = 20f * zoneScale,
+                tableNameLargeTextSizePx = 30f * zoneScale,
+                tableNameLargeHeightPx = 48f * zoneScale,
 
-                    combineTextSizePx = 16.sp.toPx() * zoneScale,
-                    combineSmallPaddingPx = 2.dp.toPx() * zoneScale,
-                    combineLargePaddingPx = 4.5.dp.toPx() * zoneScale,
-                    combineBgCornerPx = 8.dp.toPx() * zoneScale,
-                    iconDiv = 2.dp.toPx() * zoneScale,
+                combineTextSizePx = 16f * zoneScale,
+                combineSmallPaddingPx = 2f * zoneScale,
+                combineLargePaddingPx = 4.5f * zoneScale,
+                combineBgCornerPx = 8f * zoneScale,
+                iconDiv = 2f * zoneScale,
 
-                    guestTextSizePx = 16.sp.toPx() * zoneScale,
-                    bottomBgHeightPx = 32.dp.toPx() * zoneScale,
-                    guestZoneHeightPxLittleRect = 16.dp.toPx() * zoneScale,
+                guestTextSizePx = 16f * zoneScale,
+                bottomBgHeightPx = 32f * zoneScale,
+                guestZoneHeightPxLittleRect = 16f * zoneScale,
 
-                    bookingTimeTextSizePx = 16.sp.toPx() * zoneScale,
-                    bookingTimeZoneHeight = 32.dp.toPx() * zoneScale,
+                bookingTimeTextSizePx = 16f * zoneScale,
+                bookingTimeZoneHeight = 32f * zoneScale,
 
-                    rectRadius = 12.dp.toPx() * zoneScale,
-                    rectBottomPaddingLtr = 12.dp.toPx() * zoneScale,
+                rectRadius = 12f * zoneScale,
+                rectBottomPaddingLtr = 12f * zoneScale,
 
-                    wallWidth = 32.dp.toPx() * zoneScale,
-                    wallHeight = 32.dp.toPx() * zoneScale,
-                )
+                wallWidth = 32f * zoneScale,
+                wallHeight = 32f * zoneScale,
             )
-        }
+        )
     }
+
     val drawables by remember {
         mutableStateOf(
             Drawables(
@@ -278,19 +493,17 @@ fun TableZoneCanvas(
                             drawables = drawables,
                             sizeType = it.sizeType,
                             tableName = "A02",
-                            tableBgColor = color_0xFF14CABF.toArgb(),
-                            combineBgColor = color_0xFFFFFFFF.toArgb(),
                             combineText = "20",
                             bookTime = "1h25m",
                             guestZoneText = "40",
                         )
                     }
 
-                    SizeType.LARGE_RECT,
+                    SizeType.LARGE_RECT_WIDTH,
+                    SizeType.MEDIUM_RECT_WIDTH,
+                    SizeType.SMALL_RECT,
                     SizeType.MEDIUM_RECT,
-                    SizeType.SMALL_SQUARE,
-                    SizeType.MEDIUM_SQUARE,
-                    SizeType.LARGE_SQUARE,
+                    SizeType.LARGE_RECT,
                     -> {
                         drawRectTable(
                             this,
@@ -300,9 +513,7 @@ fun TableZoneCanvas(
                             layoutSize = layoutSize,
                             drawables = drawables,
                             sizeType = it.sizeType,
-                            tableBgColor = color_0xFF9195A3.toArgb(),
                             tableName = "A02",
-                            combineBgColor = color_0xFFFFFFFF.toArgb(),
                             combineText = "20",
                             bookTime = "1h25m",
                             guestNum = "40",
@@ -337,7 +548,7 @@ fun drawSmallCircleTable2(
     yOffset: Int = 400,
     circleTable: TableWidget,
     tableColor: Color,
-    layoutSize: LayoutSize,
+    layoutSize: LayoutSizeDp,
     combineBitmap: ImageBitmap,
 ) {
     val drawOffset = circleTable.offset.copy(

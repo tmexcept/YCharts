@@ -10,11 +10,9 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import com.example.piechartcontainer.ui.theme.Purple200
 import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF212121
 import com.example.piechartcontainer.ui.theme.color_0xFF4E8AFF
-import com.example.piechartcontainer.ui.theme.color_0xFFE79315
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
 
 
@@ -26,23 +24,12 @@ fun drawRectTable(
     layoutSize: LayoutSize,
     drawables: Drawables,
     sizeType: SizeType,
-
-    combineBgColor: Int = 0,
     combineText: String? = null,
-    combineContentColor: Int = color_0xFF4E8AFF.toArgb(),
-
     tableName: String,
-    tableNameTextColor: Int = color_0xFFFFFFFF.toArgb(),
-    tableBgColor: Int = color_0xFF14CABF.toArgb(),
-
     bookTime: String? = null,
-    bookTimeContentColor: Int = color_0xFFFFFFFF.toArgb(),
-
     chairNum: String = "40",
     guestNum: String? = null,
     payAmountText: String? = null,
-    bottomBgColor: Int = 0,
-    bottomContentColor: Int = color_0xFF212121.toArgb(),
 ) {
     pathClip.apply {
         reset()
@@ -60,7 +47,7 @@ fun drawRectTable(
     with(drawScope) {
         clipPath(path = pathClip) {
             drawContext.canvas.nativeCanvas.apply {
-                paint.setColor(tableBgColor)
+                paint.setColor(widget.widgetColor.tableColor)
                 drawRoundRect(
                     widget.offset.x,
                     widget.offset.y,
@@ -71,17 +58,17 @@ fun drawRectTable(
                     paint
                 )
 
-                drawables.combine?.setTint(combineContentColor)
+                drawables.combine?.setTint(widget.widgetColor.combineContentColor)
                 drawCombineInfo(
                     canvas = this,
                     widget = widget,
                     paint = paint,
                     layoutSize = layoutSize,
                     drawable = drawables.combine,
-                    combineBgColor = combineBgColor,
+                    combineBgColor = widget.widgetColor.combineBgColor,
                     sizeType = sizeType,
                     combineText = combineText,
-                    combineContentColor = combineContentColor,
+                    combineContentColor = widget.widgetColor.combineContentColor,
                 )
 
                 drawBottomContent(
@@ -91,10 +78,10 @@ fun drawRectTable(
                     layoutSize = layoutSize,
                     sizeType = sizeType,
                     drawables = drawables,
-                    bgColor = bottomBgColor,
+                    bgColor = widget.widgetColor.bottomBgColor,
                     guestNum = guestNum,
                     chairNum = chairNum,
-                    contentColor = bottomContentColor,
+                    contentColor = widget.widgetColor.bottomContentColor,
                     payAmountText = payAmountText,
                 )
 
@@ -104,15 +91,14 @@ fun drawRectTable(
                     layoutSize = layoutSize,
                     drawables = drawables,
                     tableName = tableName,
-                    tableNameTextSize = if (sizeType == SizeType.SMALL_SQUARE) {
+                    tableNameTextSize = if (sizeType == SizeType.SMALL_RECT) {
                         layoutSize.tableNameSmallTextSizePx
                     } else {
                         layoutSize.tableNameLargeTextSizePx
                     },
-                    tableNameTextColor = tableNameTextColor,
+                    tableNameTextColor = widget.widgetColor.tableNameColor,
                     paint = paint,
-                    bookTime = if (sizeType != SizeType.LARGE_SQUARE && sizeType != SizeType.LARGE_RECT) null else bookTime,
-                    bookTimeContentColor = bookTimeContentColor,
+                    bookTime = if (sizeType != SizeType.LARGE_RECT && sizeType != SizeType.LARGE_RECT_WIDTH) null else bookTime,
                 )
             }
         }
@@ -130,7 +116,6 @@ private fun drawTableName(
     tableNameTextColor: Int,
     paint: Paint,
     bookTime: String? = null,
-    bookTimeContentColor: Int = 0,
 ) {
 
     paint.textSize = tableNameTextSize
@@ -183,7 +168,7 @@ private fun drawTableName(
             layoutSize = layoutSize,
             drawable = drawables.book,
             paint = paint,
-            contentColor = bookTimeContentColor,
+            contentColor = tableNameTextColor,
             text = bookTime,
             textWidth = textWidth,
             left = left,
@@ -200,31 +185,31 @@ private fun drawCombineInfo(
     drawable: Drawable? = null,
     paint: Paint,
     sizeType: SizeType,
-    combineBgColor: Int = 0,
+    combineBgColor: Int? = null,
     combineText: String? = null,
-    combineContentColor: Int = color_0xFF4E8AFF.toArgb(),
+    combineContentColor: Int,
 ) {
     var contentWidth = layoutSize.iconSizePx
     var textWidth = 0f
-    if (combineText != null && sizeType != SizeType.SMALL_SQUARE) {
+    if (combineText != null && sizeType != SizeType.SMALL_RECT) {
         paint.typeface = Typeface.DEFAULT
         paint.textSize = layoutSize.combineTextSizePx
         textWidth = paint.measureText(combineText)
         contentWidth += layoutSize.iconDiv + textWidth
     }
-    val padding = if (sizeType == SizeType.SMALL_SQUARE) {
+    val padding = if (sizeType == SizeType.SMALL_RECT) {
         layoutSize.combineSmallPaddingPx
     } else {
         layoutSize.combineLargePaddingPx
     }
-    val left = if(sizeType == SizeType.SMALL_SQUARE) {
+    val left = if(sizeType == SizeType.SMALL_RECT) {
         widget.offset.x + widget.width / 2 - contentWidth / 2
     } else {
         widget.offset.x + widget.width - contentWidth - padding
     }
     val top = widget.offset.y + padding
 
-    if (combineBgColor != 0 && sizeType != SizeType.SMALL_SQUARE) {
+    if (combineBgColor != null && sizeType != SizeType.SMALL_RECT) {
         paint.setColor(combineBgColor)
         drawCustomRoundRect(canvas,
             left - padding,
@@ -242,7 +227,7 @@ private fun drawCombineInfo(
         drawable = drawable,
         paint = paint,
         contentColor = combineContentColor,
-        text = if(sizeType == SizeType.SMALL_SQUARE) null else combineText,
+        text = if(sizeType == SizeType.SMALL_RECT) null else combineText,
         textWidth = textWidth,
         left = left,
         top = top,
@@ -257,17 +242,17 @@ private fun drawBottomContent(
     sizeType: SizeType,
     drawables: Drawables,
     paint: Paint,
-    bgColor: Int = 0,
+    bgColor: Int? = null,
     guestNum: String? = null,
     chairNum: String,
-    contentColor: Int = color_0xFF4E8AFF.toArgb(),
+    contentColor: Int,
     payAmountText: String? = null,
 ) {
 
-    if (bgColor != 0) {
+    if (bgColor != null) {
         val left = widget.offset.x
         val bottom = widget.offset.y + widget.height
-        val zoneHeight = if(sizeType == SizeType.SMALL_SQUARE) {
+        val zoneHeight = if(sizeType == SizeType.SMALL_RECT) {
             layoutSize.guestZoneHeightPxLittleRect
         } else {
             layoutSize.bottomBgHeightPx
@@ -282,10 +267,10 @@ private fun drawBottomContent(
         )
     }
 
-    if(sizeType != SizeType.SMALL_SQUARE) {
+    if(sizeType != SizeType.SMALL_RECT) {
         paint.typeface = Typeface.DEFAULT
         paint.textSize = layoutSize.guestTextSizePx
-        if (payAmountText == null || (sizeType != SizeType.LARGE_RECT && sizeType != SizeType.MEDIUM_RECT)) {
+        if (payAmountText == null || (sizeType != SizeType.LARGE_RECT_WIDTH && sizeType != SizeType.MEDIUM_RECT_WIDTH)) {
             val text = guestNum ?: chairNum
             val drawable = if(guestNum == null) {
                 drawables.chair
