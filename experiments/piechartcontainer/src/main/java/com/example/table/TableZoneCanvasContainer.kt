@@ -5,9 +5,10 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import android.text.TextPaint
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -42,202 +43,10 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.piechartcontainer.R
-import com.example.piechartcontainer.ui.theme.color_0xFF14CABF
 import com.example.piechartcontainer.ui.theme.color_0xFF1D2129
 import com.example.piechartcontainer.ui.theme.color_0xFF4E5969
-import com.example.piechartcontainer.ui.theme.color_0xFF9195A3
 import com.example.piechartcontainer.ui.theme.color_0xFFFDFDFD
 import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
-
-val circleSmall = listOf(
-    TableWidget(
-        offset = Offset(10f, 20f),
-        radius = 30f,
-        sizeType = SizeType.SMALL_CIRCLE,
-        widgetColor = WidgetColor.Empty().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(200f, 20f),
-        radius = 30f,
-        sizeType = SizeType.SMALL_CIRCLE,
-        widgetColor = WidgetColor.Used().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(400f, 20f),
-        radius = 30f,
-        sizeType = SizeType.SMALL_CIRCLE,
-        widgetColor = WidgetColor.Booked().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(600f, 20f),
-        radius = 30f,
-        sizeType = SizeType.SMALL_CIRCLE,
-        widgetColor = WidgetColor.NeedClean().copy(
-            combineBgColor = null,
-        )
-    ),
-)
-
-val circleMedium = listOf(
-    TableWidget(
-        offset = Offset(10f, 100f),
-        radius = 50f,
-        sizeType = SizeType.MEDIUM_CIRCLE,
-        widgetColor = WidgetColor.Empty()
-    ),
-    TableWidget(
-        offset = Offset(200f, 100f),
-        radius = 50f,
-        sizeType = SizeType.MEDIUM_CIRCLE,
-        widgetColor = WidgetColor.Used()
-    ),
-    TableWidget(
-        offset = Offset(400f, 100f),
-        radius = 50f,
-        sizeType = SizeType.MEDIUM_CIRCLE,
-        widgetColor = WidgetColor.Booked()
-    ),
-    TableWidget(
-        offset = Offset(600f, 100f),
-        radius = 50f,
-        sizeType = SizeType.MEDIUM_CIRCLE,
-        widgetColor = WidgetColor.NeedClean()
-    ),
-)
-
-val circleLarge = listOf(
-    TableWidget(
-        offset = Offset(10f, 240f),
-        radius = 70f,
-        sizeType = SizeType.LARGE_CIRCLE,
-        widgetColor = WidgetColor.Empty()
-    ),
-    TableWidget(
-        offset = Offset(200f, 240f),
-        radius = 70f,
-        sizeType = SizeType.LARGE_CIRCLE,
-        widgetColor = WidgetColor.Used()
-    ),
-    TableWidget(
-        offset = Offset(400f, 240f),
-        radius = 70f,
-        sizeType = SizeType.LARGE_CIRCLE,
-        widgetColor = WidgetColor.Booked()
-    ),
-    TableWidget(
-        offset = Offset(600f, 240f),
-        radius = 70f,
-        sizeType = SizeType.LARGE_CIRCLE,
-        widgetColor = WidgetColor.NeedClean()
-    ),
-)
-
-val rectSmall = listOf(
-    TableWidget(
-        offset = Offset(10f, 400f),
-        width = 60f,
-        height = 60f,
-        sizeType = SizeType.SMALL_RECT,
-        widgetColor = WidgetColor.Empty().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(200f, 400f),
-        width = 60f,
-        height = 60f,
-        sizeType = SizeType.SMALL_RECT,
-        widgetColor = WidgetColor.Used().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(400f, 400f),
-        width = 60f,
-        height = 60f,
-        sizeType = SizeType.SMALL_RECT,
-        widgetColor = WidgetColor.Booked().copy(
-            combineBgColor = null,
-        )
-    ),
-    TableWidget(
-        offset = Offset(600f, 400f),
-        width = 60f,
-        height = 60f,
-        sizeType = SizeType.SMALL_RECT,
-        widgetColor = WidgetColor.NeedClean().copy(
-            combineBgColor = null,
-        )
-    ),
-)
-
-val rectMedium = listOf(
-    TableWidget(
-        offset = Offset(10f, 500f),
-        width = 100f,
-        height = 100f,
-        sizeType = SizeType.MEDIUM_RECT,
-        widgetColor = WidgetColor.Empty()
-    ),
-    TableWidget(
-        offset = Offset(200f, 500f),
-        width = 100f,
-        height = 100f,
-        sizeType = SizeType.MEDIUM_RECT,
-        widgetColor = WidgetColor.Used()
-    ),
-    TableWidget(
-        offset = Offset(400f, 500f),
-        width = 100f,
-        height = 100f,
-        sizeType = SizeType.MEDIUM_RECT,
-        widgetColor = WidgetColor.Booked()
-    ),
-    TableWidget(
-        offset = Offset(600f, 500f),
-        width = 100f,
-        height = 100f,
-        sizeType = SizeType.MEDIUM_RECT,
-        widgetColor = WidgetColor.NeedClean()
-    ),
-)
-
-val rectLarge = listOf(
-    TableWidget(
-        offset = Offset(10f, 640f),
-        width = 140f,
-        height = 140f,
-        sizeType = SizeType.LARGE_RECT,
-        widgetColor = WidgetColor.Empty()
-    ),
-    TableWidget(
-        offset = Offset(200f, 640f),
-        width = 140f,
-        height = 140f,
-        sizeType = SizeType.LARGE_RECT,
-        widgetColor = WidgetColor.Used()
-    ),
-    TableWidget(
-        offset = Offset(400f, 640f),
-        width = 140f,
-        height = 140f,
-        sizeType = SizeType.LARGE_RECT,
-        widgetColor = WidgetColor.Booked()
-    ),
-    TableWidget(
-        offset = Offset(600f, 640f),
-        width = 140f,
-        height = 140f,
-        sizeType = SizeType.LARGE_RECT,
-        widgetColor = WidgetColor.NeedClean()
-    ),
-)
 
 val widgets = listOf(
     TableWidget(
@@ -306,24 +115,19 @@ val widgets = listOf(
 //矩形(高度) 小：[60~100px） 中：[100-140px） 大：[>=140px）
 //- 矩形桌台超宽（宽度 >=160px）时，展示金额。
 private const val DESIGN_H_W_SCALE = 0.75f //设计的高宽比例3:4
+//4. 默认画布尺寸1280: 960
+private const val zoneHeight = 960f
+private const val zoneWidth = 1280f
 
 @Composable
-fun TableZoneCanvasContainer() {
+fun TableZoneCanvasContainer(
+    widgets: List<TableWidget>,
+) {
 
+    val context = LocalContext.current
     val density = LocalDensity.current
     var width by remember {
         mutableStateOf(0.dp)
-    }
-
-    val widgets by remember {
-        val list = mutableListOf<TableWidget>()
-        list.addAll(circleSmall)
-        list.addAll(circleMedium)
-        list.addAll(circleLarge)
-        list.addAll(rectSmall)
-        list.addAll(rectMedium)
-        list.addAll(rectLarge)
-        mutableStateOf(list.toList())
     }
 
     var height by remember {
@@ -352,9 +156,6 @@ fun TableZoneCanvasContainer() {
         }
     }
 
-    val zoneHeight = 1080f
-    val zoneWidth = 1440f
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -364,7 +165,6 @@ fun TableZoneCanvasContainer() {
                     return@onGloballyPositioned
                 }
                 val rect = coordinates.boundsInWindow()
-                Log.e("huhu", "rect.width=${rect.width},  rect.height=${rect.height}")
                 if (rect.height / rect.width > DESIGN_H_W_SCALE) { //上下居中
                     val destHeightPx = rect.width * DESIGN_H_W_SCALE
                     density.run {
@@ -390,7 +190,6 @@ fun TableZoneCanvasContainer() {
                     zoneScale = zoneHeight / rect.height
                     changeWidgetSize(zoneScale)
                 }
-                Log.e("huhu", "width=$width,  height=$height")
             },
         contentAlignment = Alignment.Center
     ) {
@@ -401,14 +200,17 @@ fun TableZoneCanvasContainer() {
                 modifier = Modifier
                     .width(width)
                     .height(height)
-                    .background(color_0xFFFDFDFD)
+                    .background(color_0xFFFFFFFF)
             ) {
                 TableZoneCanvas(
                     modifier = Modifier
                         .width(width)
                         .height(height),
                     widgets = widgetRealSize,
-                    zoneScale = zoneScale
+                    zoneScale = zoneScale,
+                    onPointClick = {
+                        Toast.makeText(context, "click index=$it", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         }
@@ -420,6 +222,7 @@ fun TableZoneCanvas(
     modifier: Modifier = Modifier,
     widgets: List<TableWidget>,
     zoneScale: Float = 1.0f,
+    onPointClick: (Int) -> Unit,
 ) {
     val context = LocalContext.current
     val layoutSize by remember {
@@ -476,7 +279,17 @@ fun TableZoneCanvas(
         mutableStateOf(Path())
     }
 
-    Canvas(modifier = modifier,
+    Canvas(modifier = modifier
+        .pointerInput(true) {
+            detectTapGestures {
+                widgets.forEachIndexed { index, item ->
+                    if (contains(it.x, it.y, item)) {
+                        onPointClick(index)
+                        return@detectTapGestures
+                    }
+                }
+            }
+        },
         onDraw = {
             widgets.forEach {
                 when (it.sizeType) {
@@ -538,6 +351,12 @@ fun TableZoneCanvas(
             }
         }
     )
+}
+
+private fun contains(x: Float, y: Float, widget: TableWidget): Boolean {
+    // check for empty first
+    return !(x < widget.offset.x || y < widget.offset.y
+        || x > widget.width + widget.offset.x || y > widget.height + widget.offset.y)
 }
 
 @OptIn(ExperimentalTextApi::class)

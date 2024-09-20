@@ -14,11 +14,26 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YChartsTheme
+import com.example.piechartcontainer.ui.theme.color_0xFFFFFFFF
+import com.example.table.SizeType
+import com.example.table.TableWidget
 import com.example.table.TableZoneCanvasContainer
+import com.example.table.WidgetColor
+import com.example.table.circleLarge
+import com.example.table.circleMedium
+import com.example.table.circleSmall
+import com.example.table.rectLarge
+import com.example.table.rectMedium
+import com.example.table.rectSmall
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +75,20 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Pie Chart")
                         }
 
-                        TableZoneCanvasContainer()
+
+                        val widgets by remember {
+                            val list = mutableListOf<TableWidget>()
+                            list.addAll(circleSmall)
+                            list.addAll(circleMedium)
+                            list.addAll(circleLarge)
+                            list.addAll(rectSmall)
+                            list.addAll(rectMedium)
+                            list.addAll(rectLarge)
+                            mutableStateOf(list.toList())
+                        }
+                        TableZoneCanvasContainer(
+                            widgets = widgets,
+                        )
                     }
                 }
             }
