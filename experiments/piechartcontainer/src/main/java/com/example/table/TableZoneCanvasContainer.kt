@@ -114,9 +114,9 @@ val widgets = listOf(
 //圆桌(直径) 小：[60~100px） 中：[100-140px） 大：[>=140px，∞)
 //矩形(高度) 小：[60~100px） 中：[100-140px） 大：[>=140px）
 //- 矩形桌台超宽（宽度 >=160px）时，展示金额。
-private const val DESIGN_H_W_SCALE = 0.75f //设计的高宽比例3:4
+private const val DESIGN_H_W_SCALE = 10f/16f //设计的高宽比例3:4
 //4. 默认画布尺寸1280: 960
-private const val zoneHeight = 960f
+private const val zoneHeight = 800f
 private const val zoneWidth = 1280f
 
 @Composable
@@ -176,7 +176,7 @@ fun TableZoneCanvasContainer(
                             .toDp()
                     }
 
-                    zoneScale = zoneWidth / rect.width
+                    zoneScale = rect.width / zoneWidth
                     changeWidgetSize(zoneScale)
                 } else { //左右居中
                     val destWidthPx = rect.height / DESIGN_H_W_SCALE
@@ -187,7 +187,7 @@ fun TableZoneCanvasContainer(
                             .toDp()
                     }
 
-                    zoneScale = zoneHeight / rect.height
+                    zoneScale = rect.height / zoneHeight
                     changeWidgetSize(zoneScale)
                 }
             },
