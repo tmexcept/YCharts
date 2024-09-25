@@ -62,6 +62,19 @@ class MainActivity : ComponentActivity() {
                             Text(text = "Bar Chart")
                         }
                         Spacer(modifier = Modifier.height(10.dp))
+                        Button(modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth(), onClick = {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    PieChartActivity::class.java
+                                )
+                            )
+                        }) {
+                            Text(text = "Pie Chart")
+                        }
+
 
                         val widgets by remember {
                             val list = mutableListOf<TableWidget>()
